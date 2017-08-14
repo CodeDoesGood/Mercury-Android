@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="org.codedoesgood.mercury.MainApplication">
+        android:name=".MainApplication">
         <activity android:name="org.codedoesgood.mercury.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".projectlist.view.ProjectListActivity"/>
         <meta-data
             android:name="io.fabric.ApiKey"  android:value="${crashlyticsApiKey}" />
     </application>

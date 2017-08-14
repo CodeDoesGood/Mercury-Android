@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 
+import org.codedoesgood.mercury.projectlist.viewmodel.ProjectListViewModel;
 import org.codedoesgood.mercury.viewmodel.MainActivityViewModel;
 
 import io.fabric.sdk.android.Fabric;
@@ -15,6 +16,7 @@ import timber.log.Timber;
 public class MainApplication extends Application {
 
     private MainActivityViewModel mainActivityViewModel = new MainActivityViewModel();
+    private ProjectListViewModel projectListViewModel = new ProjectListViewModel();
 
     @Override
     public void onCreate() {
@@ -30,4 +32,6 @@ public class MainApplication extends Application {
     public MainActivityViewModel getMainActivityViewModel() {
         return mainActivityViewModel;
     }
+
+    public ProjectListViewModel getProjectListViewModel() { return projectListViewModel; }
 }

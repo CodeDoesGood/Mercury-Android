@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply from: '../config/quality.gradle'
 apply plugin: 'io.fabric'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.1"
     defaultConfig {
-        applicationId "org.codedoesgood.androidtemplate"
+        applicationId "org.codedoesgood.mercury"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
@@ -21,6 +22,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -30,12 +36,19 @@ dependencies {
     })
     compile "com.android.support:appcompat-v7:$libVersions.appCompat"
     compile "com.android.support.constraint:constraint-layout:$libVersions.constraintLayout"
+    compile "com.android.support:recyclerview-v7:$libVersions.appCompat"
 
     // Third party libraries
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') { transitive = true; }
-    compile "com.jakewharton.timber:timber:$libVersions.timber"
-    compile "io.reactivex.rxjava2:rxjava:$libVersions.rxJava"
+
+    compile "com.squareup.retrofit2:adapter-rxjava2:$libVersions.rxJavaAdapter"
+    compile "com.squareup.retrofit2:converter-gson:$libVersions.converter_gson"
+    compile "com.squareup.retrofit2:retrofit:$libVersions.retrofit"
+
     compile "io.reactivex.rxjava2:rxandroid:$libVersions.rxAndroid"
+    compile "io.reactivex.rxjava2:rxjava:$libVersions.rxJava"
+
+    compile "com.jakewharton.timber:timber:$libVersions.timber"
 
     // Test
     testCompile "org.robolectric:robolectric:$libVersions.robolectric"
@@ -44,6 +57,12 @@ dependencies {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+}
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
+    defaultMethods false
+    incremental true
 }
 
 afterEvaluate {
