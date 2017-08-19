@@ -15,6 +15,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [crashlyticsApiKey: project.hasProperty('crashlytics_api_key') ? crashlytics_api_key : System.getenv('crashlytics_api_key') ]
 
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -44,6 +45,7 @@ dependencies {
     compile "com.squareup.retrofit2:adapter-rxjava2:$libVersions.rxJavaAdapter"
     compile "com.squareup.retrofit2:converter-gson:$libVersions.converter_gson"
     compile "com.squareup.retrofit2:retrofit:$libVersions.retrofit"
+    compile "com.squareup.okhttp3:logging-interceptor:$libVersions.okHttpLogInt"
 
     compile "io.reactivex.rxjava2:rxandroid:$libVersions.rxAndroid"
     compile "io.reactivex.rxjava2:rxjava:$libVersions.rxJava"
@@ -53,6 +55,7 @@ dependencies {
     // Test
     testCompile "org.robolectric:robolectric:$libVersions.robolectric"
     testCompile "junit:junit:$libVersions.junit"
+
 }
 
 repositories {

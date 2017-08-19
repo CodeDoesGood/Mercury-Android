@@ -1,9 +1,9 @@
 package org.codedoesgood.mercury.projectlist.viewmodel;
 
-import org.codedoesgood.mercury.utilities.ApiConstants;
+import org.codedoesgood.mercury.api.ApiUtility;
 import org.codedoesgood.mercury.projectlist.model.Project;
-import org.codedoesgood.mercury.model.CDGApiService;
-import org.codedoesgood.mercury.projectlist.model.ProjectsPayload;
+import org.codedoesgood.mercury.api.ApiService;
+import org.codedoesgood.mercury.projectlist.model.ProjectsResponse;
 
 import java.util.ArrayList;
 
@@ -14,9 +14,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 /**
@@ -39,22 +36,24 @@ public class ProjectListViewModel {
      * Makes the API call to retrieve all active projects.
      */
     public void retrieveAllActiveProjects() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.MERCURY_BASE_URL)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(ApiUtility.getMercuryBaseUrl())
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .buildPayload();
 
-        CDGApiService apiService = retrofit.create(CDGApiService.class);
+
+
+        ApiService apiService = ApiUtility.getApiService();
         apiService.getAllActiveProjects()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ProjectsPayload>() {
+                .subscribe(new Observer<ProjectsResponse>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) { }
 
                     @Override
-                    public void onNext(@NonNull ProjectsPayload payload) {
+                    public void onNext(@NonNull ProjectsResponse payload) {
                         updateList(payload.getProjectList());
                     }
 

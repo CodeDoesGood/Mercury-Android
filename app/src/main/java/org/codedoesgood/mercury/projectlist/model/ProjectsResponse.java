@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * API payload response
  */
-public class ProjectsPayload {
+public class ProjectsResponse {
 
     @SerializedName("content")
     private ProjectPayloadContent projectContent;

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import org.codedoesgood.mercury.R;
-import org.codedoesgood.mercury.projectlist.view.ProjectListActivity;
+import org.codedoesgood.mercury.onboarding.view.OnboardingActivity;
 
 /**
  * Default launch activity
@@ -17,7 +17,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent projectIntent = new Intent(this, ProjectListActivity.class);
-        startActivity(projectIntent);
+//        Intent intent = new Intent(this, ProjectListActivity.class);
+        Intent intent = new Intent(this, OnboardingActivity.class);
+
+        startActivity(intent);
     }
 }
