@@ -1,10 +1,10 @@
-package org.codedoesgood.mercury.mainactivitytests.Tests;
+package org.codedoesgood.mercury.mainactivitytests.tests;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.codedoesgood.mercury.view.MainActivity;
-import org.codedoesgood.mercury.mainactivitytests.Robots.MainActivityRobot;
+import org.codedoesgood.mercury.mainactivitytests.robots.MainActivityRobot;
 
 import org.junit.Rule;
 import org.junit.Test;

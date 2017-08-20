@@ -1,4 +1,4 @@
-package org.codedoesgood.mercury.mainactivitytests.Robots;
+package org.codedoesgood.mercury.mainactivitytests.robots;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;

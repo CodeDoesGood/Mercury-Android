@@ -1,12 +1,12 @@
 package org.codedoesgood.mercury.onboarding.viewmodel;
 
+import org.codedoesgood.mercury.api.ApiError;
+import org.codedoesgood.mercury.api.ApiErrorUtility;
 import org.codedoesgood.mercury.api.ApiUtility;
+import org.codedoesgood.mercury.onboarding.model.AuthenticateUserPayload;
+import org.codedoesgood.mercury.onboarding.model.AuthenticateUserResponse;
 import org.codedoesgood.mercury.onboarding.model.CreateUserPayload;
 import org.codedoesgood.mercury.onboarding.model.CreateUserResponse;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -15,7 +15,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
-import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import timber.log.Timber;
 
@@ -25,6 +24,8 @@ import timber.log.Timber;
 public class OnboardingViewModel {
 
     private BehaviorSubject<CreateUserResponse> createUserResponse = BehaviorSubject.create();
+    private BehaviorSubject<AuthenticateUserResponse> authUserResponseObservable
+            = BehaviorSubject.create();
 
     /**
      * API call to create a user and notify Observers of the response
@@ -33,6 +34,9 @@ public class OnboardingViewModel {
      */
     public void registerUser(CreateUserPayload content) {
         Timber.v("registerUser called");
+
+        // Need to validate credentials
+        // For now just create the user
 
         ApiUtility.getApiService().createUser(content)
                 .subscribeOn(Schedulers.computation())
@@ -76,24 +80,77 @@ public class OnboardingViewModel {
      * @param throwable The {@link Throwable} returned to the observer
      */
     private void createUserError(Throwable throwable) {
-        try {
             HttpException exception = (HttpException) throwable;
-            ResponseBody respBody = exception.response().errorBody();
-
-            JSONObject errorObject = new JSONObject(respBody.string());
-            String error = errorObject.getString("error");
-            String errorDescription = errorObject.getString("description");
+            ApiError apiError = ApiErrorUtility.parseError(exception.response());
             CreateUserResponse errResponse = new CreateUserResponse()
-                    .setIsError(true)
-                    .setError(error)
-                    .setErrorDescription(errorDescription);
+                    .setErrorDescription(apiError.getDescription());
 
-            Timber.v(errorDescription);
+            if (((HttpException) throwable).code() != 500) {
+                errResponse.setIsError(true);
+            }
+
+            Timber.v(apiError.getDescription());
             createUserResponse.onNext(errResponse);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (JSONException e1) {
-            e1.printStackTrace();
-        }
+    }
+
+
+    public Observable<AuthenticateUserResponse> getAuthUserObservable() {
+        return authUserResponseObservable;
+    }
+
+    /**
+     * API call to authenticate user and notify Observers of
+     * the response
+     * @param username The username as String
+     * @param password The password as String
+     */
+    public void authenticateUser(String username, String password) {
+
+        // Need to validate credentials
+        // For now just authenticate the user
+
+        AuthenticateUserPayload payload = new
+                AuthenticateUserPayload(username, password);
+
+        Timber.v("authenticateUser called username: " + username);
+        ApiUtility.getApiService().authenticateUser(payload)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AuthenticateUserResponse>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) { }
+
+                    @Override
+                    public void onNext(@NonNull AuthenticateUserResponse authenticateUserResponse) {
+                        Timber.v("on Next() called " + authenticateUserResponse.getMessage());
+                        authUserResponseObservable.onNext(authenticateUserResponse);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Timber.v("on Error() called " + e.getMessage());
+                        authUserError(e);
+                    }
+
+                    @Override
+                    public void onComplete() { }
+                });
+    }
+
+    /**
+     * Extracts the error message, constructs an "error" instance of
+     * {@link AuthenticateUserResponse} and notifies Observers.
+     * @param throwable The {@link Throwable} returned to the observer
+     */
+    private void authUserError(Throwable throwable) {
+            HttpException exception = (HttpException) throwable;
+            ApiError apiError = ApiErrorUtility.parseError(exception.response());
+
+            AuthenticateUserResponse response = new AuthenticateUserResponse();
+            response.setIsError(true)
+                    .setMessage(apiError.getDescription());
+
+            Timber.v(apiError.getDescription());
+            authUserResponseObservable.onNext(response);
     }
 }

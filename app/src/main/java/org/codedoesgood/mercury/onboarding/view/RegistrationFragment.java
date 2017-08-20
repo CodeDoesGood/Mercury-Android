@@ -33,7 +33,8 @@ public class RegistrationFragment extends Fragment {
     private EditText viewEmail;
     private EditText viewPassword;
     private CompositeDisposable compositeDisposable;
-
+    private OnboardingActivity activity;
+    private OnboardingViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class RegistrationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        activity = (OnboardingActivity) getActivity();
         initViews();
         bind();
     }
@@ -63,12 +65,12 @@ public class RegistrationFragment extends Fragment {
      * Initialize views, attach adapters and listeners.
      */
     public void initViews() {
+        activity = (OnboardingActivity) getActivity();
+        viewModel = activity.getOnboardingViewModel();
 
-        OnboardingActivity activity = (OnboardingActivity) getActivity();
         TextView accountExists = activity.findViewById(R.id.label_has_account);
-        accountExists.setOnClickListener(view -> {
-            activity.setViewPagerCurrentItem(activity.FRAGMENT_LOGIN);
-        });
+        accountExists.setOnClickListener(view ->
+            activity.setViewPagerCurrentItem(OnboardingActivity.FRAGMENT_LOGIN));
 
         viewName = activity.findViewById(R.id.reg_name);
         viewUsername = activity.findViewById(R.id.reg_username);
@@ -79,7 +81,7 @@ public class RegistrationFragment extends Fragment {
         buttonSubmitRegistration.setOnClickListener(view -> {
             Timber.v("register button clicked");
 
-            // Validate these inputs
+            // Validation will occur in ViewModel
             String username = viewUsername.getText().toString();
             String name = viewName.getText().toString();
             String password = viewPassword.getText().toString();
@@ -93,7 +95,7 @@ public class RegistrationFragment extends Fragment {
                     .buildPayload();
 
 
-            activity.getOnboardingViewModel().registerUser(content);
+            viewModel.registerUser(content);
         });
 
     }
@@ -103,8 +105,6 @@ public class RegistrationFragment extends Fragment {
      * {@link #onResume()}
      */
     public void bind() {
-        OnboardingActivity activity = (OnboardingActivity) getActivity();
-        OnboardingViewModel viewModel = activity.getOnboardingViewModel();
         compositeDisposable = new CompositeDisposable();
         compositeDisposable.add(
                 viewModel.getCreateUserObservable()
@@ -132,16 +132,18 @@ public class RegistrationFragment extends Fragment {
            public void onNext(@NonNull CreateUserResponse response) {
                Timber.v("onNext called");
                if (!response.isError()) {
-                   Toast.makeText(getActivity(), response.getVerifyCode(), Toast.LENGTH_SHORT).show();
+                   viewModel.authenticateUser(viewUsername.getText().toString(),
+                           viewPassword.getText().toString());
                } else {
-                   Toast.makeText(getActivity(), response.getErrorDescription(), Toast.LENGTH_SHORT).show();
+                   activity.displayToast(response.getErrorDescription(), Toast.LENGTH_SHORT);
+
                }
            }
 
            @Override
            public void onError(@NonNull Throwable e) {
                Timber.v("onError called");
-               Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+               activity.displayToast(e.getMessage(), Toast.LENGTH_SHORT);
            }
 
            @Override

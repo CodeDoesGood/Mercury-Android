@@ -1,5 +1,7 @@
 package org.codedoesgood.mercury.api;
 
+import org.codedoesgood.mercury.onboarding.model.AuthenticateUserPayload;
+import org.codedoesgood.mercury.onboarding.model.AuthenticateUserResponse;
 import org.codedoesgood.mercury.onboarding.model.CreateUserPayload;
 import org.codedoesgood.mercury.onboarding.model.CreateUserResponse;
 import org.codedoesgood.mercury.projectlist.model.ProjectsResponse;
@@ -29,4 +31,11 @@ public interface ApiService {
     @POST("volunteer/create")
     Observable<CreateUserResponse> createUser(@Body CreateUserPayload volunteer);
 
+    /**
+     * Authenticate existing standard user
+     * @param user The {@link AuthenticateUserPayload} representing the user login
+     * @return A {@link AuthenticateUserResponse} Observable
+     */
+    @POST("authenticate/standard")
+    Observable<AuthenticateUserResponse> authenticateUser(@Body AuthenticateUserPayload user);
 }

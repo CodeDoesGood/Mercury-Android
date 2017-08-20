@@ -1,15 +1,18 @@
 package org.codedoesgood.mercury.onboarding.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import org.codedoesgood.mercury.MainApplication;
 import org.codedoesgood.mercury.R;
 import org.codedoesgood.mercury.onboarding.viewmodel.OnboardingViewModel;
+import org.codedoesgood.mercury.projectlist.view.ProjectListActivity;
 
 /**
  * Activity holding the Login and Registration screens (fragments)
@@ -70,6 +73,25 @@ public class OnboardingActivity extends AppCompatActivity {
     public void setViewPagerCurrentItem(int position) { viewPager.setCurrentItem(position); }
 
     public OnboardingViewModel getOnboardingViewModel() { return onboardingViewModel; }
+
+
+    /**
+     * Launch the ProjectListActivity on successful authentication
+     */
+    public void launchProjectList() {
+        Intent launchProjectList = new Intent(this, ProjectListActivity.class);
+        startActivity(launchProjectList);
+        finish();
+    }
+
+    /**
+     * Standard API to display a toast message
+     * @param message The text String to display
+     * @param duration The duration as {@code Toast.LENGTH_SHORT} or {@code Toast.LENGTH_LONG}
+     */
+    public void displayToast(String message, int duration) {
+        Toast.makeText(this, message, duration).show();
+    }
 
     private final class OnboardingPagerAdapter extends FragmentPagerAdapter {
 

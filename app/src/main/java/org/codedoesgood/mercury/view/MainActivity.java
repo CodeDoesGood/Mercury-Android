@@ -21,5 +21,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, OnboardingActivity.class);
 
         startActivity(intent);
+        finish();
     }
 }
