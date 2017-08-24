@@ -85,7 +85,7 @@ public class OnboardingViewModel {
             CreateUserResponse errResponse = new CreateUserResponse()
                     .setErrorDescription(apiError.getDescription());
 
-            if (((HttpException) throwable).code() != 500) {
+            if (((HttpException) throwable).code() != 503) {
                 errResponse.setIsError(true);
             }
 
