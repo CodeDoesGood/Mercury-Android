@@ -13,6 +13,7 @@ public class DateTimeFormatRobot {
     /**
      * Use to verify that the <b>dateInMillis</b> is properly converted and the formatted date
      * contains the <b>expectedValue</b>
+     * @return True if the utility returned the expected value.
      */
     public boolean verifyDateFormat(Context context, long dateInMillis, String expectedValue){
         String dateFormatted = DateTimeFormatUtil.dateFormatedForLocale(context, dateInMillis);

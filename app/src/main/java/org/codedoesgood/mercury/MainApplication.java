@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 
+import org.codedoesgood.mercury.onboarding.viewmodel.OnboardingViewModel;
 import org.codedoesgood.mercury.projectlist.viewmodel.ProjectListViewModel;
 import org.codedoesgood.mercury.viewmodel.MainActivityViewModel;
 
@@ -17,6 +18,7 @@ public class MainApplication extends Application {
 
     private MainActivityViewModel mainActivityViewModel = new MainActivityViewModel();
     private ProjectListViewModel projectListViewModel = new ProjectListViewModel();
+    private OnboardingViewModel onboardingViewModel = new OnboardingViewModel();
 
     @Override
     public void onCreate() {
@@ -34,4 +36,6 @@ public class MainApplication extends Application {
     }
 
     public ProjectListViewModel getProjectListViewModel() { return projectListViewModel; }
+
+    public OnboardingViewModel getOnboardingViewModel() { return onboardingViewModel; }
 }
