@@ -6,6 +6,7 @@
     tools:context="org.codedoesgood.mercury.onboarding.view.RegistrationFragment">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/login_constraint_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
