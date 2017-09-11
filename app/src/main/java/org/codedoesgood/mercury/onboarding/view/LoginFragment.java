@@ -65,7 +65,7 @@ public class LoginFragment extends Fragment {
         viewPassword = activity.findViewById(R.id.login_password);
 
         accountExists.setOnClickListener(view ->
-            activity.setViewPagerCurrentItem(OnboardingActivity.FRAGMENT_REGISTRATION));
+            activity.setViewPagerCurrentItem(OnboardingActivity.Companion.getFRAGMENT_REGISTRATION()));
 
         buttonSubmitAuth.setOnClickListener(view -> authenticateUser());
     }

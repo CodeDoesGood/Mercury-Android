@@ -1,5 +1,7 @@
 package org.codedoesgood.mercury.api;
 
+import org.codedoesgood.mercury.BuildConfig;
+
 /**
  * Helper class for the API endpoint
  */
@@ -10,6 +12,11 @@ public final class ApiUtility {
      * Using localhost will not work as this resolve to the emulator/devices loopback address.
      */
     private static final String MERCURY_BASE_URL = "http://10.0.0.119:3000/api/";
+
+    /**
+     * Cached service
+     */
+    private static ApiService service = null;
 
     private ApiUtility() { }
 
@@ -24,6 +31,13 @@ public final class ApiUtility {
      * @return An implementation of the API endpoint
      */
     public static ApiService getApiService() {
-        return RetrofitClient.getClient().create(ApiService.class);
+        if (service == null) {
+            if (BuildConfig.DEBUG) {
+                service = RetrofitClient.getMockClient().create(ApiService.class);
+            } else {
+                service = RetrofitClient.getClient().create(ApiService.class);
+            }
+        }
+        return service;
     }
 }

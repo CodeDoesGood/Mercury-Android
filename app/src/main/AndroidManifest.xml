@@ -20,14 +20,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".projectlist.view.ProjectListActivity" />
+        <activity android:name=".onboarding.view.OnboardingActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${crashlyticsApiKey}" />
 
-        <activity
-            android:name=".onboarding.view.OnboardingActivity"
-            android:label="@string/title_activity_registration"/>
     </application>
 
 </manifest>

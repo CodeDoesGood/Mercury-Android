@@ -21,6 +21,7 @@ final class RetrofitClient {
 
     private static Retrofit client = null;
     private static Retrofit debugClient = null;
+    private static Retrofit mockClient = null;
 
     private RetrofitClient() { }
 
@@ -62,6 +63,32 @@ final class RetrofitClient {
                         .build();
             }
             return debugClient;
+        } else {
+            return getClient();
+        }
+    }
+
+    /**
+     * Used to return a mock Retrofit instance. If not a debug build, a standard Retrofit
+     * instance is returned
+     * @return A debugging Retrofit instance with {@link HttpLoggingInterceptor},
+     * {@link RxJava2CallAdapterFactory}, and {@link GsonConverterFactory} preset.
+     */
+    static Retrofit getMockClient() {
+        if (BuildConfig.DEBUG) {
+            if (mockClient == null) {
+
+                OkHttpClient.Builder httpClient;
+                httpClient = new OkHttpClient.Builder();
+                httpClient.addInterceptor(new OfflineMockInterceptor());
+                mockClient = new Retrofit.Builder()
+                        .baseUrl(ApiUtility.getMercuryBaseUrl())
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(httpClient.build())
+                        .build();
+            }
+            return mockClient;
         } else {
             return getClient();
         }

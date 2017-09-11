@@ -113,8 +113,8 @@ public class OnboardingViewModel {
                 AuthenticateUserPayload(username, password);
 
         Timber.v("authenticateUser called username: " + username);
-        ApiUtility.getApiService().authenticateUser(payload)
-                .subscribeOn(Schedulers.computation())
+        Observable<AuthenticateUserResponse> respObserv = ApiUtility.getApiService().authenticateUser(payload);
+        respObserv.subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AuthenticateUserResponse>() {
                     @Override
@@ -128,7 +128,8 @@ public class OnboardingViewModel {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Timber.v("on Error() called " + e.getMessage());
+                        Timber.v("on Error() called message: " + e.getMessage());
+                        Timber.v("on Error() called cause: " + e.getCause());
                         authUserError(e);
                     }
 
@@ -152,5 +153,13 @@ public class OnboardingViewModel {
 
             Timber.v(apiError.getDescription());
             authUserResponseObservable.onNext(response);
+    }
+
+    /**
+     * Used by Mockito to mock the response
+     * @param resp Payload response
+     */
+    public void authUserErrorMock(AuthenticateUserResponse resp) {
+        authUserResponseObservable.onNext(resp);
     }
 }

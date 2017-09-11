@@ -70,7 +70,7 @@ public class RegistrationFragment extends Fragment {
 
         TextView accountExists = activity.findViewById(R.id.label_has_account);
         accountExists.setOnClickListener(view ->
-            activity.setViewPagerCurrentItem(OnboardingActivity.FRAGMENT_LOGIN));
+            activity.setViewPagerCurrentItem(OnboardingActivity.Companion.getFRAGMENT_LOGIN()));
 
         viewName = activity.findViewById(R.id.reg_name);
         viewUsername = activity.findViewById(R.id.reg_username);
