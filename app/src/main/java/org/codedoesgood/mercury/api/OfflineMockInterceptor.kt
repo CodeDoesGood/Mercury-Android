@@ -23,20 +23,10 @@ class OfflineMockInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
 
-        val request = chain.request()
-
-        /* http://sample.com/hello will return "/hello" */
-//        val path = request.url().encodedPath()
-
-        /* I put a 'hello' file in debug/assets/mockResponses */
-//        val pathArray = path.split("/api/")
-//        val fileName = "mockResponses/${pathArray[1]}.json"
         val responseCode = MockApiResponseController.Companion.getResponseCode()
         val fileName = MockApiResponseController.Companion.getResponseFilePath()
-        Timber.v("FileName: $fileName")
+        Timber.v("Opening file: $fileName")
         val stream = MainApplication.Companion.getAppContext().assets.open(fileName)
-
-        /* Just read the file. */
         val json = parseStream(stream)
 
         val resp = Response.Builder()

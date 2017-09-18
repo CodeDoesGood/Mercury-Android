@@ -130,13 +130,14 @@ public class RegistrationFragment extends Fragment {
        return new DisposableObserver<CreateUserResponse>() {
            @Override
            public void onNext(@NonNull CreateUserResponse response) {
-               Timber.v("onNext called");
-               if (!response.isError()) {
+
+               String error = response.getError();
+               Timber.v("onNext called: " + error);
+               if (error.equals("Email Service")) {
                    viewModel.authenticateUser(viewUsername.getText().toString(),
                            viewPassword.getText().toString());
                } else {
                    activity.displayToast(response.getErrorDescription(), Toast.LENGTH_SHORT);
-
                }
            }
 

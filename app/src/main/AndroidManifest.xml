@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".projectlist.view.ProjectListActivity" />
         <activity android:name=".onboarding.view.OnboardingActivity" />
+        <activity android:name=".projectlist.view.ProjectListActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

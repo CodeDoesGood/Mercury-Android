@@ -35,6 +35,7 @@ ext {
             appCompat : '26.0.1',
             constraintLayout : '1.0.2',
             converter_gson : '2.3.0',
+            espresso : '3.0.1',
             junit : '4.12',
             mockitoAndroid : '2.7.22',
             okHttpLogInt : '3.2.0',

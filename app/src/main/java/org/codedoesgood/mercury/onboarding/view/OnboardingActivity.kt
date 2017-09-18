@@ -11,13 +11,14 @@ import android.widget.Toast
 
 import org.codedoesgood.mercury.MainApplication
 import org.codedoesgood.mercury.R
+import org.codedoesgood.mercury.api.MockApiResponseController
 import org.codedoesgood.mercury.onboarding.viewmodel.OnboardingViewModel
 import org.codedoesgood.mercury.projectlist.view.ProjectListActivity
 
 /**
  * Activity holding the Login and Registration screens (fragments)
  */
-class OnboardingActivity : AppCompatActivity() {
+open class OnboardingActivity : AppCompatActivity() {
 
     companion object {
 
@@ -81,9 +82,7 @@ class OnboardingActivity : AppCompatActivity() {
      * Launch the ProjectListActivity on successful authentication
      */
     fun launchProjectList() {
-        val launchProjectList = Intent(this, ProjectListActivity::class.java)
-        startActivity(launchProjectList)
-        finish()
+        startActivity(Intent(this, ProjectListActivity::class.java))
     }
 
     /**

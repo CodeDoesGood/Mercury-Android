@@ -1,5 +1,7 @@
 package org.codedoesgood.mercury
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.support.test.espresso.Espresso.*
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.action.ViewActions.swipeRight
@@ -11,6 +13,8 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
+import android.support.test.espresso.intent.Intents.intending
+import android.support.test.espresso.intent.matcher.IntentMatchers.toPackage
 import org.hamcrest.Matchers.not
 import timber.log.Timber
 import android.support.test.espresso.matcher.RootMatchers.withDecorView
@@ -18,6 +22,9 @@ import android.support.test.espresso.Espresso.onView
 
 import android.support.test.rule.ActivityTestRule
 import org.hamcrest.Matchers.containsString
+import android.app.Instrumentation.ActivityResult
+import android.content.Intent
+import android.support.test.InstrumentationRegistry
 
 
 /**
@@ -90,7 +97,7 @@ open class Robot {
      * @param direction Direction to swipe
      * @param view The view on which to swipe
      */
-    fun swipeDirection(direction: Int, view: Int): Robot{
+    fun swipeDirection(direction: Int, view: Int): Robot {
         when (direction) {
             DIRECTION_UP -> onView(withId(view)).perform(swipeUp())
             DIRECTION_RIGHT -> onView(withId(view)).perform(swipeRight())
@@ -143,5 +150,52 @@ open class Robot {
             }
         }
         return this
+    }
+
+    /**
+     * Standard robot API to verify that a toast message has been displayed containing the specified text.
+     *
+     * @param text Text to validate in the Toast
+     * @param activity [Activity] - Used to obtain the activity window
+     * @param timeOutSeconds Optional time to wait for the Toast to display. Default is 3 seconds.
+     */
+    fun checkForToastContainingText(text: String, activity: Activity, timeOutSeconds: Int = 3): Robot {
+        var passed = false
+        var secondsElapsed = 0
+        val decorView = activity.window.decorView
+
+        //NoMatchingRootException
+        while (!passed && secondsElapsed < timeOutSeconds + 1) {
+            try {
+                onView(withText(containsString(text)))
+                        .inRoot(withDecorView(not(decorView)))
+                        .check(matches(isDisplayed()))
+                passed = true
+            } catch (e: Exception) {
+                if (secondsElapsed >= timeOutSeconds) {
+                    throw Exception("Time-out exceeded before toast containing message '$text' was found")
+                }
+                Thread.sleep(1000L)
+                secondsElapsed++
+            }
+        }
+        return this
+    }
+
+    /**
+     * Press the back button. If currently displayed activity is root activity,
+     * pressing back button would result in application closing.
+     */
+    fun pressBackButton() {
+        pressBack()
+    }
+
+    /**
+     * Open the overflow icon and click an item in the menu
+     * @param itemText The text of the menu item to select
+     */
+    fun clickOverflowMenuItem(itemText: String) {
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
+        onView(withText(itemText)).perform(click())
     }
 }

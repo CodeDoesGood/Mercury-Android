@@ -111,7 +111,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onNext(@NonNull AuthenticateUserResponse authenticateUserResponse) {
                 Timber.v("onNext ");
-
+                
                 if (!authenticateUserResponse.getIsError()) {
                     if (authenticateUserResponse.getAuthToken().length() > 0) {
                         activity.launchProjectList();
