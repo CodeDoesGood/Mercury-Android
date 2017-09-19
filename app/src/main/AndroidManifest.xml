@@ -19,15 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".onboarding.view.OnboardingActivity" />
         <activity android:name=".projectlist.view.ProjectListActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${crashlyticsApiKey}" />
 
-        <activity
-            android:name=".onboarding.view.OnboardingActivity"
-            android:label="@string/title_activity_registration"/>
     </application>
 
 </manifest>

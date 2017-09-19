@@ -14,7 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 import retrofit2.HttpException;
 import timber.log.Timber;
 
@@ -23,9 +23,9 @@ import timber.log.Timber;
  */
 public class OnboardingViewModel {
 
-    private BehaviorSubject<CreateUserResponse> createUserResponse = BehaviorSubject.create();
-    private BehaviorSubject<AuthenticateUserResponse> authUserResponseObservable
-            = BehaviorSubject.create();
+    private PublishSubject<CreateUserResponse> createUserResponse = PublishSubject.create();
+    private PublishSubject<AuthenticateUserResponse> authUserResponseObservable
+            = PublishSubject.create();
 
     /**
      * API call to create a user and notify Observers of the response
@@ -46,9 +46,9 @@ public class OnboardingViewModel {
                     public void onSubscribe(@NonNull Disposable d) { }
 
                     @Override
-                    public void onNext(@NonNull CreateUserResponse createUserResponse) {
+                    public void onNext(@NonNull CreateUserResponse response) {
                         Timber.v("onNext called");
-                        notifyObservers(createUserResponse);
+                        createUserResponse.onNext(response);
                     }
 
                     @Override
@@ -62,16 +62,12 @@ public class OnboardingViewModel {
                 });
     }
 
-    public Observable<CreateUserResponse> getCreateUserObservable() { return createUserResponse; }
-
     /**
-     * Pass the {@link CreateUserResponse} to any Observers
-     * @param response The {@code CreateUserResponse} returned by
-     * the {@link org.codedoesgood.mercury.api.ApiService#createUser(CreateUserPayload)}
+     * Retreive Subject observable for the Create User Request
+     * @return Subject bservable
      */
-    private void notifyObservers(CreateUserResponse response) {
-        Timber.v("notifyObservers called");
-        createUserResponse.onNext(response);
+    public PublishSubject<CreateUserResponse> getCreateUserObservable() {
+        return createUserResponse;
     }
 
     /**
@@ -83,7 +79,8 @@ public class OnboardingViewModel {
             HttpException exception = (HttpException) throwable;
             ApiError apiError = ApiErrorUtility.parseError(exception.response());
             CreateUserResponse errResponse = new CreateUserResponse()
-                    .setErrorDescription(apiError.getDescription());
+                    .setErrorDescription(apiError.getDescription())
+                    .setError(apiError.getError());
 
             if (((HttpException) throwable).code() != 503) {
                 errResponse.setIsError(true);
@@ -93,8 +90,11 @@ public class OnboardingViewModel {
             createUserResponse.onNext(errResponse);
     }
 
-
-    public Observable<AuthenticateUserResponse> getAuthUserObservable() {
+    /**
+     * Retreive the Subject observable for Authenticate User request
+     * @return Subject observable
+     */
+    public PublishSubject<AuthenticateUserResponse> getAuthUserObservable() {
         return authUserResponseObservable;
     }
 
@@ -113,8 +113,8 @@ public class OnboardingViewModel {
                 AuthenticateUserPayload(username, password);
 
         Timber.v("authenticateUser called username: " + username);
-        ApiUtility.getApiService().authenticateUser(payload)
-                .subscribeOn(Schedulers.computation())
+        Observable<AuthenticateUserResponse> respObserv = ApiUtility.getApiService().authenticateUser(payload);
+        respObserv.subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AuthenticateUserResponse>() {
                     @Override
@@ -128,7 +128,8 @@ public class OnboardingViewModel {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Timber.v("on Error() called " + e.getMessage());
+                        Timber.v("on Error() called message: " + e.getMessage());
+                        Timber.v("on Error() called cause: " + e.getCause());
                         authUserError(e);
                     }
 

@@ -38,7 +38,14 @@ public class CreateUserResponse {
         this.verifyCode = verifyCode;
     }
 
+    /**
+     * Get the general error type
+     * @return The top level error message type
+     */
     public String getError() {
+        if (error == null) {
+            error = "";
+        }
         return error;
     }
 
